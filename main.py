@@ -1,7 +1,6 @@
 from PIL import Image, ImageOps
 
-chars = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']
-
+chars = [" ", ".", ":", "-", "=", "+", "*", "#", "%", "@"]
 
 def main():
 
@@ -27,19 +26,49 @@ def main():
 
     im = ImageOps.grayscale(im)
 
-    im.save("test.jpg")
-
     print("Pixel: ", im.getpixel((x, y)))
 
     asciiStr = ""
 
-    for i in range(0, x_dimension):
-        for j in range(0, y_dimension):
-            #im.putpixel((i,j), 0)
-            asciiStr += getCharFromPixel(im.getpixel((i,j)))    
+    scaleFac = float(input("Enter the scaling factor (as num): "))
 
-    im.save("cursed.jpg")
+    im = im.resize((int(x_dimension / scaleFac), int(y_dimension / scaleFac)),resample=Image.LANCZOS)
+    x_dimension, y_dimension = im.size[0], im.size[1]
+
+    for i in range(0, y_dimension):
+        asciiStr += "\n"
+        for j in range(0, x_dimension):
+            #im.putpixel((i,j), 0)
+            asciiStr += str(getCharFromPixel(im.getpixel((j,i)))) 
+
+    print(asciiStr)
+
 
 def getCharFromPixel(p):
-    
-    return 'a'
+    if (p < 25):
+        return chars[0]
+    elif (p < 51):
+        return chars[1]
+    elif (p < 76):
+        return chars[2]
+    elif (p < 102):
+        return chars[3]
+    elif (p < 127):
+        return chars[4]
+    elif (p < 153):
+        return chars[5]
+    elif (p < 178):
+        return chars[6]
+    elif (p < 204):
+        return chars[7]
+    elif (p < 229):
+        return chars[8]
+    elif (p <= 255):
+        return chars[9]
+
+
+#actually run it this time you dork
+main()
+
+
+
