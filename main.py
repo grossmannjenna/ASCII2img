@@ -1,10 +1,10 @@
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageDraw, ImageFont
 
 chars = [" ", ".", ":", "-", "=", "+", "*", "#", "%", "@"]
 
 def main():
 
-      #read in and open image source file 
+     #read in and open image source file 
     imageFile = input("Please enter the exact path to an image file: ")
     im = Image.open(imageFile)
 
@@ -17,16 +17,6 @@ def main():
     x_dimension, y_dimension = im.size[0], im.size[1]
         #convert to grayscale
     im = ImageOps.grayscale(im)
-
-
-    im.save("test.jpg")
-    x, y = 21, y_dimension - 42
-
-    print("\n", "File Name: ", fileName, "\n", "Format: ", im.format, "\n Width: ", x_dimension, "px  Height: ", y_dimension, "px\n") 
-
-    im = ImageOps.grayscale(im)
-
-    print("Pixel: ", im.getpixel((x, y)))
 
     asciiStr = ""
 
