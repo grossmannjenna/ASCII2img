@@ -9,11 +9,13 @@ fileName = fileName.split(".")[0]
 
 x_dimension, y_dimension = im.size[0], im.size[1]
 
-x, y = 0, 0
+x, y = 0, y_dimension - 1
 
-print("\n", "File Name: ", fileName, "\n", "Format: ", im.format, "\n Len: ", x_dimension, "px  Wid: ", y_dimension, "px\n") 
+print("\n", "File Name: ", fileName, "\n", "Format: ", im.format, "\n Width: ", x_dimension, "px  Height: ", y_dimension, "px\n") 
 
 im = ImageOps.grayscale(im)
+
+im.save("test.jpg")
 
 pixels = im.load()
 
