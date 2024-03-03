@@ -10,25 +10,25 @@ chars = [" ", ".", ":", "-", "=", "+", "*", "#", "%", "@"]
 
 def get_char_from_pixel(p):
     if p < 25:
-        return chars[0]
-    elif p < 51:
-        return chars[1]
-    elif p < 76:
-        return chars[2]
-    elif p < 102:
-        return chars[3]
-    elif p < 127:
-        return chars[4]
-    elif p < 153:
-        return chars[5]
-    elif p < 178:
-        return chars[6]
-    elif p < 204:
-        return chars[7]
-    elif p < 229:
-        return chars[8]
-    elif p <= 255:
         return chars[9]
+    elif p < 51:
+        return chars[8]
+    elif p < 76:
+        return chars[7]
+    elif p < 102:
+        return chars[6]
+    elif p < 127:
+        return chars[5]
+    elif p < 153:
+        return chars[4]
+    elif p < 178:
+        return chars[3]
+    elif p < 204:
+        return chars[2]
+    elif p < 229:
+        return chars[1]
+    elif p <= 255:
+        return chars[0]
 
 def generate_ascii_art(file_path, scale_factor):
     try:
