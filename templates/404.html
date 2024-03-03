@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>The page you were looking for doesn't exist (404)</title>
+  <title>Page Not Found (404)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
   body {
@@ -16,7 +16,7 @@
     bottom: 1%;
     width: 100%;
     text-align: center;
-    font-size: .6em;
+    font-size: 1.2em;
     color: #fff
   }
 
@@ -36,13 +36,13 @@
   }
 
   h1 { 
-    font-size: 4em;
+    font-size: 4.2em;
     color: #fff;
     line-height: 1em;
   }
 
   p {
-    font-size: 1.4em;
+    font-size: 1.5em;
     color: #fff;
     padding-right: 5%;
   }
@@ -71,10 +71,10 @@
   <img src="{{ url_for('static', filename='light-bulb.png') }}" class="image">
   <div>
     <div class="dialog">
-      <h1>Hey, who turned off the lights?</h1>
-      <p>We were unable to find the page you were looking for.</p>
+        <h1>Hey, who turned off the lights???</h1>
+      <p>It looks like we were unable to find the page you were looking for :(</p>
     </div>
   </div> 
 </body>
-<footer><a href="/" target="_blank">Go Home</a></footer>
+  <footer><a target="_self" href="/" target="_blank">Go Home</a></footer>
 </html>

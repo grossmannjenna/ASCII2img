@@ -13,6 +13,17 @@
         #fileInput {
             display: none;
         }
+        #uploadedImage {
+            max-width: 100%;
+            max-height: 450px; /* Adjust the max height as needed */
+            margin: 10px auto; /* Center the image horizontally */
+            display: none;
+        }
+        @media only screen and (max-width: 600px) {
+        #uploadedImage {
+            max-height: 200px; /* Adjust the max height for smaller screens */
+            }
+        }
         #fileInputLabel {
             padding: 9px; /* Slightly smaller */
             background-color: #3498db;
@@ -22,18 +33,34 @@
             cursor: pointer;
             display: inline-block;
         }
+        #scalingInput {
+            padding: 8px;
+            width: 45px; /* Adjust the width as needed */
+            margin-top: 10px;
+            text-align: center;
+        }
         #generateButton {
             padding: 10px; /* Somewhat larger */
-            background-color: #4CAF50;
-            color: white;
+            /*background-color: #4CAF50;*/
+            /*color: white;*/
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1.2em;
             margin-top: 10px;
         }
+        #generateButton:disabled {
+            background-color: #ccc; /* Grey when disabled */
+            color: black;
+            cursor: not-allowed;
+        }
+        #generateButton:enabled {
+            background-color: #4CAF50; /* Green when enabled */
+            color: white;
+            cursor: pointer;
+        }
         #resultContainer {
-            max-height: 450px;
+            max-height: 9999px;
             overflow-y: auto;
             white-space: pre;
             margin: 20px 0;
@@ -49,28 +76,117 @@
             cursor: pointer;
             margin-top: 10px;
         }
-    </style>    
+        #copyButton:disabled, #saveButton:disabled {
+            padding: 10px;
+            background-color: #ccc;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: not-allowed;
+            margin-top: 10px;
+        }
+        #clearButton {
+            padding: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+         #clearButton:disabled {
+            padding: 10px;
+            background-color: #ccc;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
+
     <h1>ASCII Art Generator</h1>
-    <p>Upload an image and click "Generate" to create ASCII art.</p>
+    <p>Upload an image, choose a scaling factor, and click "Generate" to create ASCII art.</p>
 
-    <input type="file" id="fileInput" accept=".jpg, .jpeg, .png" style="display: none;">
-    <label for="fileInput" id="fileInputLabel">Open Image</label>
+    <input type="file" id="fileInput" accept=".jpg, .jpeg, .png, .webp, .blp, .bmp, .dds, .dib, .eps, .ico, .svg, .pcx, .tiff" style="display: none;">
+    <label for="fileInput" id="fileInputLabel" title="Upload an Image">Choose Image</label>
 
-    <input type="number" id="scaleInput" placeholder="Enter scaling factor" step="0.1" min="0.1" max="10" style="margin-top: 10px; padding: 5px;">
+    <br>
 
-    <button id="generateButton" onclick="generate()">Generate</button>
+    <img id="uploadedImage" style="display: none;"> <button id="removeImageButton" onclick="removeImage()" style="display: none;">X</button>
+
+    <br>
+
+    <label for="scalingInput">Scaling Factor:</label>
+    <input type="number" id="scalingInput" placeholder="" step="0.1" title="Choose a number greater than 1 (demicals OK)" style="margin-top: 10px; padding: 5px;">x smaller
+
+    <br>
+
+    <button id="generateButton" onclick="generate()" title="Generate the ASCII art" disabled>Generate</button>
 
     <div id="resultContainer"></div>
 
-    <button id="copyButton" onclick="copyToClipboard()">Copy to Clipboard</button>
-    <button id="saveButton" onclick="saveToFile()">Save</button>
-
+    <button id="copyButton" onclick="copyToClipboard()" title="Copy the ASCII art to your clipboard" disabled>Copy to Clipboard</button>
+    <button id="saveButton" onclick="saveToFile()" title="Save the ASCII art as a text file" disabled>Save</button>
+    <button id="clearButton" onclick="clearArt()" title="Get rid of the ASCII art" disabled>Clear</button>
     <script>
+    function clearArt() {
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerText = '';
+    }
+    function removeImage() {
+        const fileInput = document.getElementById('fileInput');
+        const removeImageButton = document.getElementById('removeImageButton');
+        const generateButton = document.getElementById('generateButton');
+        const imagePreview = document.getElementById('uploadedImage');
+        const copyButton = document.getElementById('copyButton');
+        const saveButton = document.getElementById('saveButton');
+        const clearButton = document.getElementById('clearButton');
+
+
+        fileInput.value = ''; // Clear the file input
+        removeImageButton.style.display = 'none'; // Hide the remove button
+        generateButton.disabled = true; // Disable the Generate button
+        copyButton.disabled = true;
+        saveButton.disabled = true;
+        clearButton.disabled = true;
+        imagePreview.style.display = 'none';
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function () {
+        const removeImageButton = document.getElementById('removeImageButton');
+        const generateButton = document.getElementById('generateButton');
+
+        removeImageButton.style.display = this.files.length > 0 ? 'inline-block' : 'none';
+        copyButton.disabled = saveButton.disabled = clearButton.disabled = generateButton.disabled = this.files.length === 0;
+    });
+
+    function handleFileInputChange() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadedImage = document.getElementById('uploadedImage');
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    uploadedImage.src = e.target.result;
+                    uploadedImage.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
+                const genBut = document.getElementById('generateButton');
+                genBut.disabled = 0;
+            } else {
+                uploadedImage.style.display = 'none';
+            }
+        }
+
+        document.getElementById('fileInput').addEventListener('change', handleFileInputChange);
+
         function generate() {
             const fileInput = document.getElementById('fileInput');
-            const scaleInput = document.getElementById('scaleInput');
+            const scaleInput = document.getElementById('scalingInput');
             const generateButton = document.getElementById('generateButton');
             const resultContainer = document.getElementById('resultContainer');
 
@@ -84,7 +200,6 @@
 
             const formData = new FormData();
             formData.append('file', file);
-            if(isNaN(scaleFactor) || scaleFactor <= 0) alert("Scaling must be a number greater than 0")
             formData.append('scale_factor', (isNaN(scaleFactor) || scaleFactor <= 0) ? 1 : scaleFactor);
 
             generateButton.disabled = true;
