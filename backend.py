@@ -57,6 +57,10 @@ def generate_ascii_art(file_path, scale_factor):
 def index():
     return render_template('index.html')
 
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html')
+
 @app.route('/api/generate_ascii', methods=['POST'])
 def your_endpoint():
     try:
