@@ -121,6 +121,8 @@
     <input type="number" id="scalingInput" placeholder="" step="0.1" title="Choose a number greater than 1 (demicals OK)" style="margin-top: 10px; padding: 5px;">x smaller
 
     <br>
+    <div id="dimensions"></div>
+    <br>
 
     <button id="generateButton" onclick="generate()" title="Generate the ASCII art" disabled>Generate</button>
 
@@ -133,6 +135,7 @@
     function clearArt() {
         const resultContainer = document.getElementById('resultContainer');
         resultContainer.innerText = '';
+        copyButton.disabled = saveButton.disabled = clearButton.disabled = 1;
     }
     function removeImage() {
         const fileInput = document.getElementById('fileInput');
@@ -142,15 +145,18 @@
         const copyButton = document.getElementById('copyButton');
         const saveButton = document.getElementById('saveButton');
         const clearButton = document.getElementById('clearButton');
-
+        const resultContainer = document.getElementById('resultContainer');
 
         fileInput.value = ''; // Clear the file input
         removeImageButton.style.display = 'none'; // Hide the remove button
         generateButton.disabled = true; // Disable the Generate button
-        copyButton.disabled = true;
-        saveButton.disabled = true;
-        clearButton.disabled = true;
+        if (!resultContainer.innerText || resultContainer.innerText === '') {
+            copyButton.disabled = true;
+            saveButton.disabled = true;
+            clearButton.disabled = true;
+        }
         imagePreview.style.display = 'none';
+        clearDimensions();
     }
 
     document.getElementById('fileInput').addEventListener('change', function () {
@@ -158,7 +164,7 @@
         const generateButton = document.getElementById('generateButton');
 
         removeImageButton.style.display = this.files.length > 0 ? 'inline-block' : 'none';
-        copyButton.disabled = saveButton.disabled = clearButton.disabled = generateButton.disabled = this.files.length === 0;
+        generateButton.disabled = this.files.length === 0;
     });
 
     function handleFileInputChange() {
@@ -184,6 +190,53 @@
 
         document.getElementById('fileInput').addEventListener('change', handleFileInputChange);
 
+
+        // test -------------------------------
+        document.getElementById('scalingInput').addEventListener('input', function() {
+            const fileInput = document.getElementById('fileInput');
+
+            // Check if an image is present
+            if (fileInput.files.length > 0) {
+                // Create a FileReader to get the image dimensions
+                const reader = new FileReader();
+
+                // Set up an onload event for the reader
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.onload = function () {
+                        const originalWidth = img.width;
+                        const originalHeight = img.height;
+
+                        // Get the scaling factor
+                        const scaleFactor = parseFloat(document.getElementById('scalingInput').value);
+
+                        // Update the dimensions text
+                        updateDimensions(originalWidth, originalHeight, scaleFactor);
+                    };
+                    img.src = e.target.result;
+                };
+
+                // Read the file as a data URL
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+        function updateDimensions(originalWidth, originalHeight, scaleFactor) {
+            const scaledWidth = Math.round(originalWidth / scaleFactor);
+            const scaledHeight = Math.round(originalHeight / scaleFactor);
+            const dimensionsText = `(${originalWidth} x ${originalHeight}) -> (${scaledWidth} x ${scaledHeight})`;
+
+            const dimensionsElement = document.getElementById('dimensions');
+            dimensionsElement.innerText = dimensionsText;
+        }
+
+        function clearDimensions() {
+            const dimensionsElement = document.getElementById('dimensions');
+            dimensionsElement.innerText = '';
+        }
+        // end test ---- --  --- ------------------
+
+
+
         function generate() {
             const fileInput = document.getElementById('fileInput');
             const scaleInput = document.getElementById('scalingInput');
@@ -194,6 +247,8 @@
                 alert('Please select an image file.');
                 return;
             }
+
+            copyButton.disabled = saveButton.disabled = clearButton.disabled = 0;
 
             const file = fileInput.files[0];
             const scaleFactor = parseFloat(scaleInput.value);
