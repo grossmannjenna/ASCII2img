@@ -27,6 +27,9 @@ def your_endpoint():
         # Generate ASCII art
         ascii_art = generate_ascii_art(file_path, scale_factor)
 
+        file.close()
+        os.remove(file_path)
+
         return jsonify({'ascii_art': ascii_art})
     except Exception as e:
         return jsonify({'error': str(e)})

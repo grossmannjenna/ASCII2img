@@ -164,7 +164,7 @@
         const removeImageButton = document.getElementById('removeImageButton');
         const generateButton = document.getElementById('generateButton'); 
         const rsButton = document.getElementById('recommendedSize');
-
+        
         rsButton.style.display = removeImageButton.style.display = this.files.length > 0 ? 'inline-block' : 'none';
         generateButton.disabled = this.files.length === 0;
     });
@@ -179,21 +179,14 @@
 
                 reader.onload = function (e) {
                     
-                    // test
                     const img = new Image();
                     img.onload = function () {
-                        console.log(';');
                         const originalWidth = img.width;
                         const originalHeight = img.height;
-                        console.log(originalHeight);
                         const scaleFactor = parseFloat(document.getElementById('scalingInput').value);
-                        console.log(scaleFactor);
                         updateDimensions(originalWidth, originalHeight, scaleFactor);
                     };
                     img.src = e.target.result;
-
-                    console.log(uploadedImage);
-                    //test
 
                     uploadedImage.src = e.target.result;
                     uploadedImage.style.display = 'block';
@@ -201,7 +194,10 @@
 
                 reader.readAsDataURL(file);
                 const genBut = document.getElementById('generateButton');
+                
                 genBut.disabled = 0;
+                document.getElementById('scalingInput').value = 1;
+                
             } else {
                 uploadedImage.style.display = 'none';
             }
