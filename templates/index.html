@@ -15,17 +15,17 @@
         }
         #uploadedImage {
             max-width: 100%;
-            max-height: 450px; /* Adjust the max height as needed */
-            margin: 10px auto; /* Center the image horizontally */
+            max-height: 450px; 
+            margin: 10px auto; 
             display: none;
         }
         @media only screen and (max-width: 600px) {
         #uploadedImage {
-            max-height: 200px; /* Adjust the max height for smaller screens */
+            max-height: 200px; 
             }
         }
         #fileInputLabel {
-            padding: 9px; /* Slightly smaller */
+            padding: 9px; 
             background-color: #3498db;
             color: white;
             border: none;
@@ -35,14 +35,12 @@
         }
         #scalingInput {
             padding: 8px;
-            width: 45px; /* Adjust the width as needed */
+            width: 45px;
             margin-top: 10px;
             text-align: center;
         }
         #generateButton {
-            padding: 10px; /* Somewhat larger */
-            /*background-color: #4CAF50;*/
-            /*color: white;*/
+            padding: 10px; 
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -50,12 +48,12 @@
             margin-top: 10px;
         }
         #generateButton:disabled {
-            background-color: #ccc; /* Grey when disabled */
+            background-color: #ccc; 
             color: black;
             cursor: not-allowed;
         }
         #generateButton:enabled {
-            background-color: #4CAF50; /* Green when enabled */
+            background-color: #4CAF50; 
             color: white;
             cursor: pointer;
         }
@@ -113,12 +111,13 @@
 
     <br>
 
-    <img id="uploadedImage" style="display: none;"> <button id="removeImageButton" onclick="removeImage()" style="display: none;">X</button>
+    <img id="uploadedImage" style="display: none;"> <button id="removeImageButton" onclick="removeImage()" style="display: none;" title="Remove the image">X</button>
+    <button id="recommendedSize" onclick="setRSize()" title="Set to the recommended dimensions for your device" style="display: none;">Recommended Scaling Factor</button>
 
     <br>
 
     <label for="scalingInput">Scaling Factor:</label>
-    <input type="number" id="scalingInput" placeholder="" step="0.1" title="Choose a number greater than 1 (demicals OK)" style="margin-top: 10px; padding: 5px;">x smaller
+    <input type="number" id="scalingInput" placeholder="" step="0.1" title="Choose a number greater than 1 (demicals OK)" value="1" style="margin-top: 10px; padding: 5px;">x smaller
 
     <br>
     <div id="dimensions"></div>
@@ -146,10 +145,11 @@
         const saveButton = document.getElementById('saveButton');
         const clearButton = document.getElementById('clearButton');
         const resultContainer = document.getElementById('resultContainer');
+        const rsButton = document.getElementById('recommendedSize');
 
-        fileInput.value = ''; // Clear the file input
-        removeImageButton.style.display = 'none'; // Hide the remove button
-        generateButton.disabled = true; // Disable the Generate button
+        fileInput.value = ''; 
+        rsButton.style.display = removeImageButton.style.display = 'none'; 
+        generateButton.disabled = true; 
         if (!resultContainer.innerText || resultContainer.innerText === '') {
             copyButton.disabled = true;
             saveButton.disabled = true;
@@ -157,13 +157,15 @@
         }
         imagePreview.style.display = 'none';
         clearDimensions();
+        document.getElementById('scalingInput').value = '1';
     }
 
     document.getElementById('fileInput').addEventListener('change', function () {
         const removeImageButton = document.getElementById('removeImageButton');
-        const generateButton = document.getElementById('generateButton');
+        const generateButton = document.getElementById('generateButton'); 
+        const rsButton = document.getElementById('recommendedSize');
 
-        removeImageButton.style.display = this.files.length > 0 ? 'inline-block' : 'none';
+        rsButton.style.display = removeImageButton.style.display = this.files.length > 0 ? 'inline-block' : 'none';
         generateButton.disabled = this.files.length === 0;
     });
 
@@ -176,6 +178,23 @@
                 const reader = new FileReader();
 
                 reader.onload = function (e) {
+                    
+                    // test
+                    const img = new Image();
+                    img.onload = function () {
+                        console.log(';');
+                        const originalWidth = img.width;
+                        const originalHeight = img.height;
+                        console.log(originalHeight);
+                        const scaleFactor = parseFloat(document.getElementById('scalingInput').value);
+                        console.log(scaleFactor);
+                        updateDimensions(originalWidth, originalHeight, scaleFactor);
+                    };
+                    img.src = e.target.result;
+
+                    console.log(uploadedImage);
+                    //test
+
                     uploadedImage.src = e.target.result;
                     uploadedImage.style.display = 'block';
                 };
@@ -190,33 +209,25 @@
 
         document.getElementById('fileInput').addEventListener('change', handleFileInputChange);
 
-
-        // test -------------------------------
         document.getElementById('scalingInput').addEventListener('input', function() {
             const fileInput = document.getElementById('fileInput');
 
-            // Check if an image is present
             if (fileInput.files.length > 0) {
-                // Create a FileReader to get the image dimensions
                 const reader = new FileReader();
 
-                // Set up an onload event for the reader
                 reader.onload = function (e) {
                     const img = new Image();
                     img.onload = function () {
                         const originalWidth = img.width;
                         const originalHeight = img.height;
 
-                        // Get the scaling factor
                         const scaleFactor = parseFloat(document.getElementById('scalingInput').value);
 
-                        // Update the dimensions text
                         updateDimensions(originalWidth, originalHeight, scaleFactor);
                     };
                     img.src = e.target.result;
                 };
 
-                // Read the file as a data URL
                 reader.readAsDataURL(fileInput.files[0]);
             }
         });
@@ -233,9 +244,35 @@
             const dimensionsElement = document.getElementById('dimensions');
             dimensionsElement.innerText = '';
         }
-        // end test ---- --  --- ------------------
 
+        function setRSize() {
+            const scaleF = document.getElementById('scalingInput'); // scaleF.value will access the value 
+            const charSize = 8;
+            const maxW = window.innerWidth;
+            const maxH = window.innerHeight;
 
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.onload = function () {
+                        const originalWidth = img.width;
+                        const originalHeight = img.height;
+      
+                        scaleF.value = parseInt(window.innerWidth/originalWidth) + 0.5 /*margin of error*/;
+
+                        const scaleFactor = parseFloat(document.getElementById('scalingInput').value);
+
+                        updateDimensions(originalWidth, originalHeight, scaleFactor);
+                    };
+                    img.src = e.target.result;
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
 
         function generate() {
             const fileInput = document.getElementById('fileInput');
@@ -289,16 +326,13 @@
             const resultContainer = document.getElementById('resultContainer');
             const asciiArt = resultContainer.innerText;
 
-            // Create a Blob from the ASCII art
             const blob = new Blob([asciiArt], { type: 'text/plain' });
 
-            // Create a link and trigger a click event to download the file
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
             link.download = 'ascii_art.txt';
             link.click();
         }
     </script>
-
 </body>
 </html>
