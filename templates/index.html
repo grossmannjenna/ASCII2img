@@ -261,7 +261,7 @@
                         const originalWidth = img.width;
                         const originalHeight = img.height;
       
-                        scaleF.value = parseInt(window.innerWidth/originalWidth) + 0.5 /*margin of error*/;
+                        scaleF.value = parseFloat((originalHeight/(maxH/12)).toFixed(1)) + 0.5 /*margin of error*/;
 
                         const scaleFactor = parseFloat(document.getElementById('scalingInput').value);
 
