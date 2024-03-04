@@ -11,6 +11,5 @@ This was created for the Clemson CUHACKIT 2024 hackathon. The website allows you
 A live demo (might) be found running live @ http://img2ascii.gcpins.tech 
 (alternative link: http://gcpins.pythonanywhere.com/)
 
-#### Usage Video (w/ photos)
-https://youtu.be/Jnx_sDX1dZY 
+[Usage Video](https://youtu.be/Jnx_sDX1dZY)
 
