@@ -4,4 +4,5 @@ You'll need Python 3, Flask, and Pillow (PIL). Install the necessary packages at
 To run:
 `python flask_app.py`
 
-(might) be found running live @ http://gcpins.pythonanywhere.com/
+(might) be found running live @ http://img2ascii.gcpins.tech 
+(alternative link: http://gcpins.pythonanywhere.com/)
