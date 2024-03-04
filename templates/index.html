@@ -291,6 +291,7 @@
             formData.append('scale_factor', (isNaN(scaleFactor) || scaleFactor <= 0) ? 1 : scaleFactor);
 
             generateButton.disabled = true;
+            generateButton.innerText = "Generating...";
 
             fetch('/api/generate_ascii', {
                 method: 'POST',
@@ -300,10 +301,12 @@
             .then(data => {
                 resultContainer.innerText = data.ascii_art;
                 generateButton.disabled = false;
+                generateButton.innerText = "Generate";
             })
             .catch(error => {
                 alert('Error: ' + error.message);
                 generateButton.disabled = false;
+                generateButton.innerText = "Generate";
             });
         }
 
