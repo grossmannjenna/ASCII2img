@@ -1,3 +1,6 @@
+from PIL import Image, ImageOps
+import os
+
 chars = [" ", ".", ":", "-", "=", "+", "*", "#", "%", "@"]
 
 def get_char_from_pixel(p):
