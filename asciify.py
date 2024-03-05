@@ -2,11 +2,6 @@ from PIL import Image, ImageOps
 import os
 
 chars = [" ", ".", ":", "-", "=", "+", "*", "#", "%", "@"]
-detailedChars = [' ', '.', "'", '`', '^', ',', ':', ';', 'I', 'l', '!', 'i', '>', '<', '~', '+', '_', '-', '?', ']', '[', '}', '{', '1', ')', '(', '|', '\\', '/', 't', 'f', 'j', 'r', 'x', 'n', 'u', 'v', 'c', 'z', 'X', 'Y', 'U', 'J', 'C', 'L', 'Q', '0', 'O', 'Z', 'm', 'w', 'q', 'p', 'd', 'b', 'k', 'h', 'a', 'o', '*', '#', 'M', 'W', '&', '8', '%', 'B', '@', '$']
-detailedChars = detailedChars[::-1]
-
-def detailed_get_char_from_pixel(p):
-    return detailedChars[int((p/255)*(len(detailedChars)-1))]
 
 def get_char_from_pixel(p):
     if p < 25:
@@ -33,11 +28,9 @@ def get_char_from_pixel(p):
 def generate_ascii_art(file_path, scale_factor):
     try:
         im = Image.open(file_path)
-        fileName = os.path.basename(file_path).split(".")[0]
 
         x_dimension, y_dimension = im.size[0], im.size[1]
         im = ImageOps.grayscale(im)
-
 
         ascii_str = ""
 
@@ -48,7 +41,6 @@ def generate_ascii_art(file_path, scale_factor):
             ascii_str += "\n"
             for j in range(0, x_dimension):
                 ascii_str += str(get_char_from_pixel(im.getpixel((j, i))))
-                #ascii_str += str(detailed_get_char_from_pixel(im.getpixel((j, i))))
 
         return ascii_str
     except Exception as e:
